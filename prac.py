@@ -17,4 +17,3 @@ print('get_axial gives: ')
 print(ax[0])
 print(np.round(ax[1],4))
 
-"VRE KOITAKSE DW RE"
