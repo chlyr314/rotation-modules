@@ -1,10 +1,9 @@
 import numpy as np
-from mpl_toolkits import mplot3d
-from numpy import *
-from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.patches import FancyArrowPatch
 from mpl_toolkits.mplot3d import proj3d
+from rots import get_rotmat
+from rots import get_axial
 
 
 # function that plots arrowheads on tips of vector lines
@@ -21,8 +20,8 @@ class Arrow3D(FancyArrowPatch):
 
 # function to plot vector in 3D
 def pvec(p,ax,c='k',lins='-'):
-    """ 
-    Plots vector p with arrow head. 
+    """
+    Plots vector p with arrow head.
     INPUTS : 1) p : the end points of the vector
                  2) ax : figure handle
                  3) c : vector color (default is black)
@@ -36,7 +35,7 @@ def pvec(p,ax,c='k',lins='-'):
 
 # function to connect points p1 and p2
 def conp(p1,p2,ax,c='k',lins='-'):
-    """ 
+    """
     Connects points p1 and p2 with lines in 3D
     INPUTS : 1) p1 : first point
              2) p2 : second point
@@ -48,30 +47,32 @@ def conp(p1,p2,ax,c='k',lins='-'):
 
 
 # function for plotting rotation path
-def plotrot(r,v0,n,S,ax,d1flag=False,d2flag=False):
+def plotrot(s,theta,v0,n,ax,d1flag=False,d2flag=False):
 
     """
     Function that plots rotation path from point v0 to point v.
-    It will discretize the path in n steps and will apply the same 
-    rotation sequentially : v = R v0 = dR*dR*dR....*dR*v0 where dR 
+    It will discretize the path in n steps and will apply the same
+    rotation sequentially : v = R v0 = dR*dR*dR....*dR*v0 where dR
     is the rotation tensor that corresponds to dtheta = theta/n. This
     is done just to get the rotation path that results from the effect of
     the total rotation tensor R.
 
-    INPUTS: 1) r : rotation matrix that corresponds to dtheta = theta/n
-            2) v0 : vector to be rotated
-            3) n  : number of steps. Total rotation theta = n*dtheta
-            4) S  : Skew-symmetric matrix associated with dR. Unit axis of
-                    rotation is extracted from it
+    INPUTS: 1) s  : axis of rotation vector(doesnt have to be unit)
+            2) theta : rotation in angles
+            3) v0 : vector to be rotated
+            4) n  : number of steps. Total rotation theta = n*dtheta
             5) ax : current figure handle
             6) d1flag  : flag to plot 1st order approximation path
             7) d2flag  : flag to plot 2nd order approximation path
-    
+
     OUTPUT: v : position of v0 after the effect of total rotation
 
     """
+
+    dtheta = theta/n
+    r,S= get_rotmat(s,dtheta)
+
     # plot initial vector and axis of rotation vector
-    s = np.array([-S[1,2],S[0,2],-S[0,1]]) # axis of rot
     pvec(s/np.linalg.norm(s),ax,'r','--')
     pvec(v0,ax,'k','--')
 

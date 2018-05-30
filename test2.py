@@ -4,32 +4,26 @@
 # of the rotation.
 
 import numpy as np
-from rots import get_rotmat
-from rots import get_axial
 from rotplot import plotrot as pltr
 import matplotlib.pyplot as plt
 
 # Axis of rotation
-#s = np.array([1,1,1])*1/np.sqrt(3)
-s = np.array([0,1,0])
+s = np.array([1,1,1])*1/np.sqrt(3)
+#s = np.array([0,1,0])
 
 # Compound rotation around s (in degrees)
-theta = 90
+theta = 180
 
 # Set an initial vector
 v0 = np.array([1,0,1])*1/np.sqrt(2)
 
-# Discretize theta in n part
-n = 15
+# set number of steps
+n=30
 
-# Get rotation matrix and axial matrix for dtheta
-dtheta = theta/n
-r,S= get_rotmat(s,dtheta)
-
+# initialize figure handle for 3d plot
 fig = plt.figure()
 ax = fig.add_subplot(111,projection='3d')
 
 # plot
-v0 = pltr(r,v0,n,S,ax,d1flag=False,d2flag=False)
-
+v = pltr(s,theta,v0,n,ax)
 plt.show(ax)
