@@ -1,3 +1,6 @@
+# This file showcases that the combount axis of rotation for 2 sequential
+# rotations is not the vector addition of the axes for the first and second
+# rotation. This can be seen from the fact that it is not in their span
 import numpy as np
 from rots import get_rotmat
 from rotplot import plotrot as pltr
@@ -6,7 +9,6 @@ import matplotlib.pyplot as plt
 # Plot incremental rotation
 
 # Axis of rotation
-# s = np.array([1, 1, 1])*1/np.sqrt(3)
 s = np.array([0, 1, 0])
 
 # Compound rotation around s (in degrees)
