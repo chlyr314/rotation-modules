@@ -26,11 +26,12 @@ ax = fig.add_subplot(111, projection='3d')
 
 # plot
 v = pltr(s, theta, v0, n, ax)
-#######
+
+# Plot linear approx
 theta = 90
 col = 'k'
 dflag = True
 n=20
 v = pltr(s, theta, v0, n, ax, col, dflag)
-#######
+
 plt.show(ax)
