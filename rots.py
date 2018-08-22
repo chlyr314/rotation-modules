@@ -143,24 +143,43 @@ def get_axial(R):
 
 
 def qua2mat(n, theta):
+    """
+    INPUT:
+           <n> : vector representing the axis of rotation
+           <theta> : scalar representing the rotation in degrees around <n>
+
+    OUTPUT:
+           <q> : unit quaternion representing the rotation
+           <M> : 3x3 matrix associated with this rotation
+
+    Description: Function that accepts a vector <n> and a rotation value,
+    <theta> - in degrees! - and returns the corresponding unit quaternion,
+    along with the rotation matrix associated with <n> and <theta>
+    """
 
 
-    n = n/np.norm(n)
-    th = theta*np*pi/180
+
+    n = n/np.linalg.norm(n)
+    th = theta*np.pi/180
 
     # Quaternion components. Re(q) = w
-    w, x, y, z = p.cos(th/2), n(0)*np.sin(th/2), n(1)*np.sin(th/2), \
-                 n(2)*np.sin(th/2)
+    w, x, y, z = (np.cos(th/2), n[0]*np.sin(th/2), n[1]*np.sin(th/2),
+                 n[2]*np.sin(th/2))
 
     # Quaternion form q = [w, x, y, z]
     q = np.array([w, x, y, z])
 
     # Matrix
-    m11, m12, m13 = 1-2*y**2-2*z**2, 2*x*y+2*w*z 2*x*z-2*w*y
-    m21, m22, m23 = 2*x*y-2*w*z 1-2*x**2-2*z**2, 2*z*y+2*w*x
-    m31, m32, m33 = 2*x*z+2*w*y 2*y*z-2*w*x 1-2*x**2-2*y**2
+    #m11, m12, m13 = 1-2*y**2-2*z**2, 2*x*y+2*w*z, 2*x*z-2*w*y
+    #m21, m22, m23 = 2*x*y-2*w*z, 1-2*x**2-2*z**2, 2*z*y+2*w*x
+    #m31, m32, m33 = 2*x*z+2*w*y, 2*y*z-2*w*x, 1-2*x**2-2*y**2
 
-    M = np.array([m11,m12,m13],[m21,m22,m23],[m31,m32,m33])
+
+    m11, m12, m13 = w**2+x**2-y**2-z**2, 2*x*y-2*w*z, 2*x*z+2*w*y
+    m21, m22, m23 = 2*x*y+2*w*z, w**2-x**2+y**2-z**2, 2*z*y-2*w*x
+    m31, m32, m33 = 2*x*z-2*w*y, 2*y*z+2*w*x, w**2-x**2-y**2+z**2
+
+    M = np.array([[m11, m12, m13], [m21, m22, m23], [m31, m32, m33]])
 
     return M
 
