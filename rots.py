@@ -2,7 +2,7 @@ import numpy as np
 import time
 import sys
 
-def get_rotmat(a,theta = None,angtype = 'degrees'):
+def get_rotmat(a, theta = None, angtype = 'degrees'):
     """ Returns rotation tensor from axial rotation vector
 
         Input: 1) <a>       is the axial vector (axis of rotation).
@@ -12,7 +12,7 @@ def get_rotmat(a,theta = None,angtype = 'degrees'):
                             is None, then the total rotation  is the norm and 
                             the input vector <a> needs to be decomposed into 
                             a unit vector and a scalar multiple.
-                            If theta is specified,then <a>
+                            If theta is specified, then <a>
                             needs only be normalized. Default value is None.
 
                3) <angtype> is the unit for the input rotation. Default is
@@ -55,16 +55,16 @@ def get_rotmat(a,theta = None,angtype = 'degrees'):
     else:
 
         # Get skew symmetric axial tensor associated with a
-        A = np.array([[0,-a[2],a[1]],[a[2],0,-a[0]],[-a[1],a[0],0]])
+        A = np.array([[0, -a[2], a[1]], [a[2], 0, -a[0]], [-a[1], a[0], 0]])
 
         # Outer product tensor
-        O = np.outer(a,a)
+        O = np.outer(a, a)
         A2=O-np.identity(3)
 
         # Get rotation tensor
         R = np.cos(theta)*np.identity(3) + (1-np.cos(theta))*O + np.sin(theta)*A
         S = theta*A
-        return R,S
+        return R, S
 
 
 
@@ -94,17 +94,17 @@ def get_axial(R):
                                         that are used in checks are rounded
                                         to the third decimal.
     """
-    if np.round(np.linalg.det(R),3) != 1.0:
+    if np.round(np.linalg.det(R), 3) != 1.0:
         sys.exit('Determinant of rotation matrix is not 1. Exiting')
 
     # Step 1 - Calculate cos of angle from tr(R) relation
     cos = 0.5*(np.trace(R)-1)
 
     # Step 2 - Cases : a =0, a= 180, 0 < a < 180
-    if np.round(cos,8) == 1:                            # No Rotation, a = 0
+    if np.round(cos, 8) == 1:                            # No Rotation, a = 0
         a = 0
-        n=np.array([1,0,0])
-    elif np.round(cos,8) == -1:                   # Angle of rotation a = 180
+        n=np.array([1, 0, 0])
+    elif np.round(cos, 8) == -1:                   # Angle of rotation a = 180
 
         a=np.pi
 
@@ -114,14 +114,14 @@ def get_axial(R):
 
         # Pick the first non-zero column vector of M = R + I
         i = 0
-        normn=np.linalg.norm(M[0:3,i])
+        normn=np.linalg.norm(M[0:3, i])
 
         while normn==0:
             i = i+1
-            normn = np.linalg.norm(M[0:3,i])
+            normn = np.linalg.norm(M[0:3, i])
 
         # Normalize it so it becomes unit
-        n = 1/normn*(M[0:3,i])
+        n = 1/normn*(M[0:3, i])
 
     else:
 
@@ -132,14 +132,36 @@ def get_axial(R):
         sin = np.sqrt(1-cos**2)
         par = 1/(2*sin)
 
-        a1 = par*(R[2,1]-R[1,2])
-        a2 = par*(R[0,2]-R[2,0])
-        a3 = par*(R[1,0]-R[0,1])
+        a1 = par*(R[2, 1]-R[1, 2])
+        a2 = par*(R[0, 2]-R[2, 0])
+        a3 = par*(R[1, 0]-R[0, 1])
 
-        n=np.array([a1,a2,a3])
+        n=np.array([a1, a2, a3])
 
     a = 180*a/np.pi
-    return n,a
+    return n, a
 
+
+def qua2mat(n, theta):
+
+
+    n = n/np.norm(n)
+    th = theta*np*pi/180
+
+    # Quaternion components. Re(q) = w
+    w, x, y, z = p.cos(th/2), n(0)*np.sin(th/2), n(1)*np.sin(th/2), \
+                 n(2)*np.sin(th/2)
+
+    # Quaternion form q = [w, x, y, z]
+    q = np.array([w, x, y, z])
+
+    # Matrix
+    m11, m12, m13 = 1-2*y**2-2*z**2, 2*x*y+2*w*z 2*x*z-2*w*y
+    m21, m22, m23 = 2*x*y-2*w*z 1-2*x**2-2*z**2, 2*z*y+2*w*x
+    m31, m32, m33 = 2*x*z+2*w*y 2*y*z-2*w*x 1-2*x**2-2*y**2
+
+    M = np.array([m11,m12,m13],[m21,m22,m23],[m31,m32,m33])
+
+    return M
 
 

@@ -47,7 +47,7 @@ def conp(p1,p2,ax,c='k',lins='-'):
 
 
 # function for plotting rotation path
-def plotrot(s,theta,v0,n,ax,d1flag=False,d2flag=False):
+def plotrot(s,theta,v0,n,ax,col='k',d1flag=False,d2flag=False):
 
     """
     Function that plots rotation path from point v0 to point v.
@@ -62,25 +62,25 @@ def plotrot(s,theta,v0,n,ax,d1flag=False,d2flag=False):
             3) v0 : vector to be rotated
             4) n  : number of steps. Total rotation theta = n*dtheta
             5) ax : current figure handle
-            6) d1flag  : flag to plot 1st order approximation path
-            7) d2flag  : flag to plot 2nd order approximation path
+            6) col: color of path(default is black)
+            7) d1flag  : flag to plot 1st order approximation path
+            8) d2flag  : flag to plot 2nd order approximation path
 
     OUTPUT: v : position of v0 after the effect of total rotation
 
     """
-
     dtheta = theta/n
     r,S= get_rotmat(s,dtheta)
 
     # plot initial vector and axis of rotation vector
-    pvec(s/np.linalg.norm(s),ax,'r','--')
+    pvec(s/np.linalg.norm(s),ax,col,'--')
     pvec(v0,ax,'k','--')
 
     vin = v0
 
     # plot rotation path
     for i in range(n):
-        ax.scatter3D(vin[0],vin[1],vin[2],c='k',alpha=0.5,s=10)
+        ax.scatter3D(vin[0],vin[1],vin[2],c=col,alpha=0.5,s=1)
         v = np.matmul(r,vin)
         conp(vin,v,ax)
         vin = v
