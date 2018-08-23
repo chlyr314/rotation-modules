@@ -19,18 +19,28 @@ class Arrow3D(FancyArrowPatch):
         FancyArrowPatch.draw(self, renderer)
 
 # function to plot vector in 3D
-def pvec(p,ax,c='k',lins='-'):
+def pvec(p,ax,c='k',ref = [0,0,0],lins='-'):
     """
     Plots vector p with arrow head.
-    INPUTS : 1) p : the end points of the vector
+    INPUTS :
+                 1) p : the end points of the vector with respect to the fixed
+                    frame
                  2) ax : figure handle
                  3) c : vector color (default is black)
-                 4) lins : linestyle (default is continuous)
+                 4) ref : coordinates of the translated frame. Default is
+                          [0,0,0]
+                 5) lins : linestyle (default is continuous)
     """
-    ax.plot3D([0,p[0]],[0,p[1]],[0,p[2]],linestyle = lins, color=c,
+    # move vector to translated reference frame
+    p = p/np.linalg.norm(p)
+    p = p + ref
+
+    ax.plot3D([ref[0],p[0]],[ref[1],p[1]],[ref[2],p[2]],linestyle = lins, color=c,
             linewidth=1)
-    a = Arrow3D([0,p[0]],[0,p[1]],[0,p[2]],mutation_scale=20,lw=0,
+
+    a = Arrow3D([ref[0],p[0]],[ref[1],p[1]],[ref[2],p[2]],mutation_scale=20,lw=0,
                 arrowstyle="-|>", color=c)
+
     ax.add_artist(a)
 
 # function to connect points p1 and p2
