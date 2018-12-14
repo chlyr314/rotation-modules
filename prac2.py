@@ -1,4 +1,4 @@
-# This file showcases that the combount axis of rotation for 2 sequential
+# This file showcases that the compount axis of rotation for 2 sequential
 # rotations is not the vector addition of the axes for the first and second
 # rotation. This can be seen from the fact that it is not in their span
 import numpy as np
@@ -34,7 +34,7 @@ s = np.array([0, 0, 1])
 v0 = pltr(s, theta, v0, n, ax, d2flag=False)
 
 # rotate initial vector v0 to v and compare results
-v0 = np.array([1, 0, 1])*1/np.sqrt(2)
+sz = np.array([1, 0, 1])*1/np.sqrt(2)
 v1 = np.array([1, 1, 0])*1/np.sqrt(2)
 
 # compound axis of rot

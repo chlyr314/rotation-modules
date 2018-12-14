@@ -192,3 +192,28 @@ def qua2mat(q):
     M = np.array([[m11, m12, m13], [m21, m22, m23], [m31, m32, m33]])
 
     return M
+
+
+def slerp(q1,q2,t):
+    """
+    INPUT: <q1> : unit quaternion at start
+           <q2> : unit quaternion at end
+            <t> : parameter 0<t<1. For t=0, q=q1. For t=1, q=q2.
+
+    OUTPUT: <q> : interpolated quaternion in between
+
+    Description: Function that performs spherical linear interpolation of
+                 quaternions q1 and q2.
+    """
+
+    # Angle between q1 and q2
+    cosz = q1.dot(q2)
+    z = np.arccos(cosz)
+
+    # slerp coefficients
+    a = np.sin((1-t)*z)/np.sin(z)
+    b = np.sin(t*z)/np.sin(z)
+
+    q = a*q1 + b*q2
+
+    return q

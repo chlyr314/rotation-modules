@@ -83,8 +83,8 @@ def plotrot(s,theta,v0,n,ax,col='k',d1flag=False,d2flag=False):
     r,S= get_rotmat(s,dtheta)
 
     # plot initial vector and axis of rotation vector
-    pvec(s/np.linalg.norm(s),ax,col,'--')
-    pvec(v0,ax,'k','--')
+    pvec(s/np.linalg.norm(s),ax,col,[0,0,0],'--')
+    pvec(v0,ax,'k',[0,0,0],'--')
 
     vin = v0
 
