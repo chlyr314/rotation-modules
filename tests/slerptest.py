@@ -1,8 +1,13 @@
+import sys
+import os
+
+pwd = os.getcwd()
+sys.path.append(pwd + '/../utils')
+
 import numpy as np
 from rots import *
 from rotplot import *
 import matplotlib.pyplot as plt
-import sys
 
 s1 = np.array([1,0,0])
 theta1 = 20

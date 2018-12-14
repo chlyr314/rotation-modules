@@ -1,9 +1,14 @@
 # Input vector axis of rotation and rotation around it to retrieve 
 # rotation matrix with a) exponential map algorith and b) quaternions
 # and compare
+import sys
+import os
+import numpy as np
+
+pwd = os.getcwd()
+sys.path.append(pwd + '/../utils')
 
 from rots import *
-import numpy as np
 
 #s = np.array([0.128842, 0.412293, 0.901894])
 s = np.array([1, 1, 1])*1/np.sqrt(3)

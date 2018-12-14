@@ -2,6 +2,11 @@
 # rotation <theta> and an initial vector <v0>, it plots the path
 # of the rotation. Can also plot 1st and second order approximations 
 # of the rotation.
+import sys
+import os
+
+pwd = os.getcwd()
+sys.path.append(pwd + '/../utils')
 
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np

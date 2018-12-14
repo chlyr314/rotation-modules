@@ -1,10 +1,17 @@
 # This file showcases that the compount axis of rotation for 2 sequential
 # rotations is not the vector addition of the axes for the first and second
 # rotation. This can be seen from the fact that it is not in their span
+import sys
+import os
+
+pwd = os.getcwd()
+sys.path.append(pwd + '/../utils')
+
 import numpy as np
 from rots import get_rotmat
 from rotplot import plotrot as pltr
 import matplotlib.pyplot as plt
+
 
 # Plot incremental rotation
 

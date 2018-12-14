@@ -2,6 +2,12 @@
 # You can make it so that <s> also rotates around another fixed vector
 # at the same time
 # TODO: add transformation from non-additive to additive components!
+import sys
+import os
+
+pwd = os.getcwd()
+sys.path.append(pwd + '/../utils')
+
 from rots import *
 import numpy as np
 from rotplot import plotrot as pltr

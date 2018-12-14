@@ -1,6 +1,11 @@
 # test 3: Given an ARRAY of rotation vectors and the
 # corresponding array of rotations around them, plot the 
 # rotation path of a vector v0
+import sys
+import os
+
+pwd = os.getcwd()
+sys.path.append(pwd + '/../utils')
 
 import numpy as np
 from rotplot import plotrot as pltr
