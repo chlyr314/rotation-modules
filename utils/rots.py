@@ -9,8 +9,8 @@ def get_rotmat(a, theta = None, angtype = 'degrees'):
 
                2) <theta>   is the angle of rotation around <a>, assumed
                             positive for counter-clockwise rotation. If value
-                            is None, then the total rotation  is the norm and 
-                            the input vector <a> needs to be decomposed into 
+                            is None, then the total rotation  is the norm and
+                            the input vector <a> needs to be decomposed into
                             a unit vector and a scalar multiple.
                             If theta is specified, then <a>
                             needs only be normalized. Default value is None.
@@ -20,7 +20,7 @@ def get_rotmat(a, theta = None, angtype = 'degrees'):
                                               b)'rads'
 
         Output: 1) Rotation tensor <R>
-                2) Skew matrix <S> 
+                2) Skew matrix <S>
     """
 
     # Get norm of axial vector
