@@ -131,3 +131,22 @@ def plotrot(s,theta,v0,n,ax,col='k',d1flag=False,d2flag=False):
     ax.set_zlim([-ub,ub])
 
     return vout
+
+def minRotMat(e0,e1):
+
+    # if vectors are not unit, turn them to unit
+    if (np.linalg.norm(e0) != 1):
+        e0 = e0/np.linalg.norm(e0)
+    if (np.linalg.norm(e1) != 1):
+        e1 = e1/np.linalg.norm(e1)
+
+    I = np.identity(3)
+    A = 2*np.outer(e1,e0)
+
+    e = e0+e1
+
+    # Rotation matrix that rotates e0 to e1 by the smallest angle
+    R = I + A - (2/np.dot(e,e))*np.outer(e,e) # Krenk, (3.15)
+    n,theta = get_axial(R)
+
+    return n, theta, R
