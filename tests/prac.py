@@ -1,5 +1,5 @@
 # Input vector axis of rotation and rotation around it to retrieve 
-# rotation matrix with a) exponential map algorith and b) quaternions
+# rotation matrix with a) exponential map algorithm and b) quaternions
 # and compare
 import sys
 import os
@@ -10,7 +10,6 @@ sys.path.append(pwd + '/../utils')
 
 from rots import *
 
-#s = np.array([0.128842, 0.412293, 0.901894])
 s = np.array([1, 1, 1])*1/np.sqrt(3)
 theta = 70
 
