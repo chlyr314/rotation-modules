@@ -1,43 +1,53 @@
-# test 3: Given an ARRAY of rotation vectors and the
-# corresponding array of rotations around them, plot the 
-# rotation path of a vector v0
+# Third test file: Given an axis of rotation <s>, an angle of 
+# rotation <theta> and an initial vector <v0>, it plots the path
+# of the rotation. Can also plot 1st and second order approximations 
+# of the rotation.
 import sys
 import os
 
 pwd = os.getcwd()
 sys.path.append(pwd + '/../utils')
 
+from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from rotplot import plotrot as pltr
 import matplotlib.pyplot as plt
 
-# get unit vectors
-s1 = np.array([0,1,0])
-s2 = np.array([0,0,1])
-s3 = np.array([1,0,0])
-
-a = np.asarray([s1, s2, s3])
-
-# define rotations about unit vectors (in degrees)
-theta1 = 90
-theta2 = 90
-theta3 = 90
-
-theta = [theta1,theta2, theta3]
+# Axis of rotation
+s = np.array([1, 1, 1])*1/np.sqrt(3)
 
 # Set an initial vector
-v0 = np.array([0,0,1])*1/np.sqrt(1)
+v0 = np.array([1, 0, 1])*1/np.sqrt(2)
 
-# Discretize theta in n part
-n = 20
+# set number of steps
+n=20
 
 # initialize figure handle for 3d plot
 fig = plt.figure()
-ax = fig.add_subplot(111,projection='3d')
+ax = fig.add_subplot(111, projection='3d')
 
-for i,th in enumerate(theta):
-    s = a[i]
-    v0 = pltr(s,th,v0,n,ax)
+# plot full path fist
+v = pltr(s, 360, v0, n, ax)
 
+# Plot rotation with first and second order aprox. flags
+theta = 200
+col = 'k'
+dflag = True # first order flag
+d2flag = True # second order flag
+n=10
 
+# Plot
+v = pltr(s, theta, v0, n, ax, col, dflag,d2flag)
+
+# plot sphere
+u = np.linspace(0, 2 * np.pi, 20)
+v = np.linspace(0, np.pi, 20)
+x = np.outer(np.cos(u), np.sin(v))
+y = np.outer(np.sin(u), np.sin(v))
+z = np.outer(np.ones(np.size(u)), np.cos(v))
+
+# Plot the surface
+ax.plot_surface(x, y, z, color='b',alpha = 0.3)
+
+plt.title('n=10,angle=60', fontsize = 20)
 plt.show(ax)
