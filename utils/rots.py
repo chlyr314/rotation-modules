@@ -3,7 +3,11 @@ import time
 import sys
 
 def get_rotmat(a, theta = None, angtype = 'degrees'):
-    """ Returns rotation tensor from axial rotation vector
+    """ Returns rotation tensor, Spin(skew) tensor
+        and tangent operator from axial rotation vector.
+        The tangent operator maps the non-additive increment
+        of the axial vector to an additive increment to the
+        current axial vector
 
         Input: 1) <a>       is the axial vector (axis of rotation).
 
@@ -21,6 +25,7 @@ def get_rotmat(a, theta = None, angtype = 'degrees'):
 
         Output: 1) Rotation tensor <R>
                 2) Skew matrix <S>
+                3) Tangent Operator <T>
     """
 
     # Get norm of axial vector
@@ -64,8 +69,51 @@ def get_rotmat(a, theta = None, angtype = 'degrees'):
         # Get rotation tensor
         R = np.cos(theta)*np.identity(3) + (1-np.cos(theta))*O + np.sin(theta)*A
         S = theta*A
-        return R, S
 
+        # Get tangent operator T. T maps an increment to the axial vector
+        # (which is non-additive) to the incremental rotation vector, which
+        # is additive
+        cot = 1/np.tan(0.5*theta)
+        T = O + 0.5*theta*cot*(np.identity(3)-O) - 0.5*theta*A
+
+        return R, S, T
+
+
+def updateAxialVector(s0, ds, T0):
+    """ Returns the updated axial vector and the corresponding
+        rotation tensor
+
+        *****************************************************
+        Input:  1) <s0>  -    current axial vector
+
+                2) <ds>  -    variation of axial vector (non-additive)
+
+                3) <T0>  -    Rotational tangent operator
+        *****************************************************
+        Output: 1) <s>   -    updated axial vector
+
+                2) <R>   -    updated rotation tensor
+
+                3) <T>   -    updated tangent operator
+
+    """
+
+    # Additive incremental rotation vector
+    a_ds = np.matmul(T0, ds)
+
+    # Total updated axial vector
+    s = s0 + a_ds
+
+    # Total (compound) rotation
+    theta = np.linalg.norm(s)*180.0/np.pi
+
+    # Compound axis of rotation
+    e = s/np.linalg.norm(s)
+
+    # Compound rotation tensor
+    R, _, T = get_rotmat(e, theta)
+
+    return s, R, T
 
 
 
