@@ -26,6 +26,9 @@ def get_rotmat(a, theta = None, angtype = 'degrees'):
         Output: 1) Rotation tensor <R>
                 2) Skew matrix <S>
                 3) Tangent Operator <T>
+        ######################################################################
+        Changelog: - Created
+                   - Added Tangent Map Operator (Krenk 3.47)
     """
 
     # Get norm of axial vector
