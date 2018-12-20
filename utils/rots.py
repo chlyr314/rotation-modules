@@ -120,14 +120,23 @@ def updateAxialVector(s0, ds, T0):
 
 
 
-def get_axial(R):
+def get_axial(R,s=None):
     """ Returns axial unit vector and angle of (counterclockwise) rotation
 
        Input:  1) <R>   -    is the rotation matrix
 
-       Output: 1) <n>   -    axial unit vector with components the rotations
+               2) <s>   -    flag to return axial vector if specified.
+                             If not specified, it returns unit vector (axis)
+                             and angle of rotation (in degrees)
+
+       Output: 1) <e>   -    axial vector if <s> is specified
+
+                                   OR
+
+               1) <n>   -    axial unit vector with components the rotations
                              with respect to the three axes
                2) <a>   -    angle of rotation in degrees
+       if <s> is not specified
 
        Description:      Perform check to see if determinant of input is 1.
                          Determine the cos<a> from the invariant relation.
@@ -189,8 +198,11 @@ def get_axial(R):
 
         n=np.array([a1, a2, a3])
 
-    a = 180*a/np.pi
-    return n, a
+    if s:
+        return n*a # returns axial vector
+    else:
+        a = 180*a/np.pi # returns unit vector < e > and angle of rotation
+        return n,a      # in degrees
 
 
 def vec2qua(n, theta):
