@@ -61,19 +61,18 @@ tot_axial = np.zeros((3,len(dtheta_vals), len(phi_vals)), dtype=float)
 # Get rotation matrix corresponding to the axial vector
 R0, A0, T = get_rotmat(e0,theta)
 
-for index,dtheta in enumerate(dtheta_vals): # dtheta is the incremental
-                                            # rotation angle
-    i = 0
+# <phi_e> is the measure of variation of the incremental axis of rotation
+for i, phi_e in enumerate(phi_vals):
 
-    for phi_e in phi_vals:      # <phi_e> is the measure of variation of
-                                # the incremental axis of rotation
+    # Define an incremental (non-additive) axial vector
+    # we define it by rotating e0 by a small ammount around an axis
+    R_d, _, _ = get_rotmat(dummy,phi_e)
 
-        # Define an incremental (non-additive) axial vector
-        # we define it by rotating e0 by a small ammount around an axis
-        R_d, _, _ = get_rotmat(dummy,phi_e) 
+    # Get variation of axis of rotation 
+    de = np.matmul(R_d,e0)
 
-        # Get variation of axis of rotation 
-        de = np.matmul(R_d,e0)
+    # <dtheta> is the incremental rotation angle around <de>
+    for index, dtheta in enumerate(dtheta_vals):
 
         # Incremental axial vector (non-additive)
         ds = (dtheta*np.pi/180.0)*de
@@ -83,8 +82,7 @@ for index,dtheta in enumerate(dtheta_vals): # dtheta is the incremental
         # Get exact total rotation tensor and corresponding compound
         # axial vector
         Rtot = np.matmul(DR,R0)
-        e_tot,theta_tot = get_axial(Rtot)
-        tot_ax = (theta_tot*np.pi/180.0)*e_tot # "exact" axial vector
+        tot_ax = get_axial(Rtot,1) # "exact" compound axial vector
 
         # s0 + ds will not give the axial vector that corresponds to Rtot,
         # because ds is not additive. We need to apply a transformation 
@@ -98,12 +96,8 @@ for index,dtheta in enumerate(dtheta_vals): # dtheta is the incremental
         resvals[index,i] = res_norm
 
         # Store components of "exact" and approximated total axial vector
-        tan_axial[0,index,i],tan_axial[1,index,i],tan_axial[2,index,i] = \
-                tan_ax[0],tan_ax[1],tan_ax[2]
-        tot_axial[0,index,i],tot_axial[1,index,i],tot_axial[2,index,i] = \
-                tot_ax[0],tot_ax[1],tot_ax[2]
-
-        i = i + 1
+        tan_axial[:,index,i] = tan_ax[:]
+        tot_axial[:,index,i] = tot_ax[:]
 
 # Plot the phi_e vs res_norm curves for a range of incremental thetas
 # This plot shows how the residual norm changes with respect to the variation
