@@ -2,7 +2,7 @@ import numpy as np
 import time
 import sys
 
-def get_rotmat(a, theta = None, angtype = 'degrees'):
+def get_rotmat(a, theta = None, tol = 1e-8):
     """ Returns rotation tensor, Spin(skew) tensor
         and tangent operator from axial rotation vector.
         The tangent operator maps the non-additive increment
@@ -19,9 +19,6 @@ def get_rotmat(a, theta = None, angtype = 'degrees'):
                             If theta is specified, then <a>
                             needs only be normalized. Default value is None.
 
-               3) <angtype> is the unit for the input rotation. Default is
-                            degrees. Options: a)'degrees'
-                                              b)'rads'
 
         Output: 1) Rotation tensor <R>
                 2) Skew matrix <S>
@@ -29,10 +26,12 @@ def get_rotmat(a, theta = None, angtype = 'degrees'):
         ######################################################################
         Changelog: - Created
                    - Added Tangent Map Operator (Krenk 3.47)
+                   - Code reworded. Now accepts only two arguments
+                     and accounts for zero axial vector input
     """
 
     # Get norm of axial vector
-    norms = np.linalg.norm(a)
+    norms = np.float64(np.linalg.norm(a))
 
     # Decompose input into unit vector (axis) and average rotation around it
     # if rotation is given in the form of components of <a>
@@ -41,28 +40,21 @@ def get_rotmat(a, theta = None, angtype = 'degrees'):
     if theta is None:
         theta = norms # Extract rotation around axial vector = norm
     else:
-        try:
-            dum = theta*np.pi/180.
-            if angtype is 'degrees':
-                theta = dum
-            else:
-                print('<Angtype> argument assumed "rads".')
-        except TypeError:
-            sys.exit('ERROR: wrong type of argument <theta>.')
+        theta = np.float64(np.pi*theta/180.0)
 
-    # If axis of rotation vector not unit, make it unit
-    if norms != 1.0:
-        a = a/norms
-
-    # If rotation is zero, then rotation tensor is the identity tensor,
-    # else, use exponential map to return rotation tensor [R]
-    if theta == 0.0:
-        print('No rotation. [R] = [I] \n')
-        return np.identity(3)
+    # If rotation is zero or the axial vector is zero, then rotation tensor is
+    # the identity tensor.Else, use exponential map to return rotation tensor R
+    if (theta < tol or norms < tol):
+        print('now')
+        print('Rotation angle is multiple of 2π. [R] = [I] \n')
+        return np.identity(3),np.zeros((3,3)),np.zeros((3,3))
 
     else:
 
-        # Get skew symmetric axial tensor associated with a
+        # Make axis of rotation unit, no matter what
+        a = a/norms
+
+        # Get skew symmetric axial tensor N, associated with unit axis, 
         A = np.array([[0, -a[2], a[1]], [a[2], 0, -a[0]], [-a[1], a[0], 0]])
 
         # Outer product tensor
@@ -70,7 +62,11 @@ def get_rotmat(a, theta = None, angtype = 'degrees'):
         A2=O-np.identity(3)
 
         # Get rotation tensor
-        R = np.cos(theta)*np.identity(3) + (1-np.cos(theta))*O + np.sin(theta)*A
+        cos = np.float64(np.cos(theta))
+        sin = np.float64(np.sin(theta))
+        R = cos*np.identity(3) + (1-cos)*O + sin*A
+
+        # Skew symmetric axial tensor S
         S = theta*A
 
         # Get tangent operator T. T maps an increment to the axial vector
@@ -120,7 +116,7 @@ def updateAxialVector(s0, ds, T0):
 
 
 
-def get_axial(R,s=None):
+def get_axial(R,s=None, tol = 1e-10):
     """ Returns axial unit vector and angle of (counterclockwise) rotation
 
        Input:  1) <R>   -    is the rotation matrix
@@ -144,31 +140,31 @@ def get_axial(R,s=None):
                                b) if cos<a>=-1 --> <a>=180 and <n> is
                                   determined from the nonzero column of
                                   matrix (R+I)
-                               c) if 0< <a> <180, then determine a from
-                                  skew-symmetric part of R using, making
-                                  use of the Euler-Rodriguez formula.
-                                  The direction of <n> is uniquely determined
-                                  from the components of the axial tensor.
+                               c) if 0< <a> <180, then determine <a> from
+                                  skew-symmetric part of R using the
+                                  Euler-Rodriguez formula. The direction
+                                  of <n> is uniquely determined from the
+                                  components of the axial tensor.
 
-                         CHECK ISSUES:  Both the determinand and the cos<a>
-                                        that are used in checks are rounded
-                                        to the third decimal.
     """
     if np.round(np.linalg.det(R), 3) != 1.0:
         sys.exit('Determinant of rotation matrix is not 1. Exiting')
 
     # Step 1 - Calculate cos of angle from tr(R) relation
-    cos = 0.5*(np.trace(R)-1)
+    cos = np.float64(0.5*(np.trace(R)-1))
 
     # Step 2 - Cases : a =0, a= 180, 0 < a < 180
-    if np.round(cos, 8) == 1:                            # No Rotation, a = 0
+    if (1 -np.round(cos, 12)) < tol :              # No Rotation, a = 0
         a = 0
         n=np.array([1, 0, 0])
-    elif np.round(cos, 8) == -1:                   # Angle of rotation a = 180
+        print('Tensor represents zero rotation angle!')
 
-        a=np.pi
+    elif (1 + np.round(cos, 12)) < tol :
 
-        print('to pire ws 180!!')
+        print('Angle is assumed exactly 180 degrees! Reversed axis of rotation')
+
+        a = np.pi
+
         # Columns of R+I are parallel to axis of rotation!
         M = R + np.identity(3)
 
