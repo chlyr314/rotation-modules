@@ -69,8 +69,14 @@ for i, theta in enumerate(thetas):
     residual[i] = res
 
 # Plot residual norm for residual vector r = (R-Ra)*v.
-# Should be zero all the way
+# Should be zero all the way: despite the singularities in the retrieved
+# axial vector, the rotation matrix retrieved from it is the same as the
+# rotation matrix retrieved from the monotonically increasin axial vector <s>
 plt.figure(1)
+plt.xlabel('Rotation angle')
+plt.ylabel('$\\vert\\vert \\vec{r}\\ \\vert\\vert$')
+plt.xticks(np.arange(0, theta_max+60, step=60))
+plt.title('Residual norm $\\vec{r}=(R-R_a)\\vec{v}$',)
 plt.plot(thetas,residual)
 
 # Plot components of the axial vector as we give it and as it is retrieved
